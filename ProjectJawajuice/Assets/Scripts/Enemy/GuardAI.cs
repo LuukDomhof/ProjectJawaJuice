@@ -17,6 +17,8 @@ public class GuardAI : MonoBehaviour {
 	public Transform destination;
 	public Transform[] waypoints;
 
+	public Color debug = Color.green;
+
 
 
 
@@ -32,6 +34,8 @@ public class GuardAI : MonoBehaviour {
 	void Update () {
 	
 		agent.destination = destination.position;
+		Sight();
+
 
 		switch(state){
 		case "Patrolling":
@@ -58,6 +62,14 @@ public class GuardAI : MonoBehaviour {
 
 	void Sight(){
 
+		Vector3 targetDir = target.transform.position - this.transform.position;
+		Vector3 forwardDir = this.transform.forward;
+
+		float angle = Vector3.Angle(forwardDir,targetDir);
+
+		if(angle <= viewAngle && angle >= -viewAngle){
+			Debug.DrawLine(this.transform.position,target.transform.position, debug);
+		}
 	}
 
 	void Chasing(){
