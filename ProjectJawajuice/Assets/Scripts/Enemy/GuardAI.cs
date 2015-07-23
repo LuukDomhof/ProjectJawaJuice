@@ -7,6 +7,9 @@ public class GuardAI : MonoBehaviour {
 
 	public GameObject target;
 
+	public float distanceToClosest = 9999f;
+	public int index;
+
 	public float viewAngle = 30f;
 	public float maxMissDistance = 2;
 
@@ -17,7 +20,8 @@ public class GuardAI : MonoBehaviour {
 	public Transform destination;
 	public Transform[] waypoints;
 
-	public Color debug = Color.green;
+	public Color red = Color.red;
+	public Color yellow = Color.yellow;
 
 
 
@@ -26,6 +30,7 @@ public class GuardAI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Debug.Log ("Waypoints length: " +waypoints.Length);
 		state = "Patrolling";
 		destination = waypoints[0];
 	}
@@ -33,7 +38,9 @@ public class GuardAI : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		agent.destination = destination.position;
+		if(state != "None"){
+			agent.destination = destination.position;
+		}
 		Sight();
 
 
@@ -68,13 +75,50 @@ public class GuardAI : MonoBehaviour {
 		float angle = Vector3.Angle(forwardDir,targetDir);
 
 		if(angle <= viewAngle && angle >= -viewAngle){
-			Debug.DrawLine(this.transform.position,target.transform.position, debug);
+
+			Debug.DrawLine(this.transform.position,target.transform.position, red);
+			RaycastHit hit;
+
+			Ray ray = new Ray(this.transform.position,targetDir);
+
+			Physics.Raycast(ray,out hit);
+
+			Debug.DrawLine(this.transform.position,hit.point);
+
+			if(hit.collider.tag == target.tag){
+				state = "Chasing";
+				destination = target.transform;
+			}else{
+				state = "Patrolling";
+			}
+
+		}else{
+			state = "Patrolling";
 		}
 	}
 
 	void Chasing(){
 
 	}
+
+//	void GetClosestWaypoint(){
+//		if(state == "Chasing"){
+//			for(int i=0;i<waypoints.Length;i++){
+//				Debug.Log (i);
+//				if(Vector3.Distance(this.transform.position, waypoints[i].position) < distanceToClosest){
+//					distanceToClosest = Vector3.Distance(this.transform.position,waypoints[i].position);
+//					index = i;
+//				}
+//				
+//				if(i == waypoints.Length -1){
+//					Debug.Log ("Setting " + waypointIndex +  " To " + i);
+//					waypointIndex = i;
+//					state = "Patrolling";
+//				}
+//			}
+//	}
+//
+//	}
 
 	void Attacking(){
 	
