@@ -30,7 +30,6 @@ public class GuardAI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log ("Waypoints length: " +waypoints.Length);
 		state = "Patrolling";
 		destination = waypoints[0];
 	}
@@ -76,14 +75,14 @@ public class GuardAI : MonoBehaviour {
 
 		if(angle <= viewAngle && angle >= -viewAngle){
 
-			Debug.DrawLine(this.transform.position,target.transform.position, red);
+			Debug.DrawLine(this.transform.position,target.transform.position, yellow);
 			RaycastHit hit;
 
 			Ray ray = new Ray(this.transform.position,targetDir);
 
 			Physics.Raycast(ray,out hit);
 
-			Debug.DrawLine(this.transform.position,hit.point);
+			Debug.DrawLine(this.transform.position,hit.point, red);
 
 			if(hit.collider.tag == target.tag){
 				state = "Chasing";
